@@ -28,10 +28,10 @@ class Solver:
             Add new hashed matrix to predeccesor dictionary if not exists,
             and add to queue for next exploration.
         """
-        if not self.generate_hash(next_matrix) in self.predecessor:
+        if not helper.generate_hash(next_matrix) in self.predecessor:
             if prev_matrix is not None:
-                prev_matrix = self.generate_hash(prev_matrix)
-            self.predecessor[self.generate_hash(next_matrix)] = prev_matrix
+                prev_matrix = helper.generate_hash(prev_matrix)
+            self.predecessor[helper.generate_hash(next_matrix)] = prev_matrix
             # need to copy it because python references by default.
             self.list_matrices_full.append(copy.copy(next_matrix))
             self.queue.append(copy.copy(next_matrix))
@@ -312,19 +312,13 @@ class Solver:
 
     def get_valid_move(self, matrix, vehicle, index, offset, offset_hor):
         """
-            Check if move falls within bounderies and if spot is empty
+            Check if move falls within boundaries and if spot is empty
         """
         y_pos = vehicle.position[index]['y'] + offset
         x_pos = vehicle.position[index]['x'] + offset_hor
         return helper.check_boundaries(y_pos) and \
             helper.check_boundaries(x_pos) and \
             matrix[y_pos][x_pos] == 0
-
-    def generate_hash(self, matrix):
-        """
-            Generate hash based on 2d array contents
-        """
-        return hash(matrix.tostring())
 
     def slide(self, matrix, vehicle, direction):
         """

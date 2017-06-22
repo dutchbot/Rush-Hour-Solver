@@ -1,10 +1,11 @@
 """
     Contains the data dump class to dump rush hour steps (matrices) to a file.
 """
-
+import helper
 import constant
-from solver import Solver
 import numpy as np
+from solver import Solver
+
 
 
 class DataDump:
@@ -47,8 +48,8 @@ class DataDump:
                 id_c = 2
                 hashes = []
                 for mneu in matrices_neutral:
-                    if not solver.generate_hash(mneu) in hashes:
-                        hashes.append(solver.generate_hash(mneu))
+                    if not helper.generate_hash(mneu) in hashes:
+                        hashes.append(helper.generate_hash(mneu))
                         matched = False
                         for mpos in matrices_positive:
                             if np.array_equal(mneu, mpos):

@@ -16,9 +16,11 @@ def main(text="....AA\n..BBCC\nrr..EF\nGGHHEF\n...IEF\n...IJJ"):
     solver.solve(matrix)
 
 def dump_data():
+    """
+        Dumps the matrices to ./data folder
+    """
     local_data_dump = DataDump()
     local_data_dump.dump_data_to_file()
 
 if __name__ == "__main__":
     main()
-    
