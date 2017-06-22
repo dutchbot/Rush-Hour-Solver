@@ -392,18 +392,11 @@ class Solver:
             Update the matrix with new vehicle positions, and update vehicle to the new position
         """
         if vehicle.new_positions:
-            matrix[vehicle.position[0]['y'],
-                   vehicle.position[0]['x']] = 0
-            matrix[vehicle.position[1]['y'],
-                   vehicle.position[1]['x']] = 0
-            if vehicle.size == 3:
-                matrix[vehicle.position[2]['y'],
-                       vehicle.position[2]['x']] = 0
-            matrix[vehicle.new_positions[0]['y'],
-                   vehicle.new_positions[0]['x']] = vehicle.char
-            matrix[vehicle.new_positions[1]['y'],
-                   vehicle.new_positions[1]['x']] = vehicle.char
-            if vehicle.size == 3:
-                matrix[vehicle.new_positions[2]['y'],
-                       vehicle.new_positions[2]['x']] = vehicle.char
+            for count, data in enumerate(vehicle.position):
+                matrix[vehicle.position[count]['y'],
+                       vehicle.position[count]['x']] = 0
+            for count, data in enumerate(vehicle.new_positions):
+                matrix[vehicle.new_positions[count]['y'],
+                       vehicle.new_positions[count]['x']] = vehicle.char
+
             vehicle.update_current_position()

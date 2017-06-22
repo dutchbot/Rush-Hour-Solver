@@ -119,6 +119,3 @@ class DataDump:
         step_dicts.sort(key=lambda x: x['id'], reverse=True)
         return step_dicts
 
-
-DATA_DUMP = DataDump()
-DATA_DUMP.dump_data_to_file()

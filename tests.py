@@ -24,9 +24,7 @@ class TestLevels(unittest.TestCase):
             for line in file_name.readlines():
                 main = Solver()
                 main.output = False
-                print(type(line.split(" ")[0]))
                 text = line.split(" ")[0]
-                print(line.split(" ")[1])
                 grid = main.create_grid_from_text(text, True)
                 matrix = main.convert_to_matrix(grid, constant.BOARD_SIZE)
                 if main.solve(matrix):
