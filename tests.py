@@ -5,6 +5,7 @@
 import unittest
 from main import Solver
 import constant
+import helper
 
 
 class TestLevels(unittest.TestCase):
@@ -25,8 +26,8 @@ class TestLevels(unittest.TestCase):
                 main = Solver()
                 main.output = False
                 text = line.split(" ")[0]
-                grid = main.create_grid_from_text(text, True)
-                matrix = main.convert_to_matrix(grid, constant.BOARD_SIZE)
+                grid = helper.create_grid_from_text(text, True)
+                matrix = helper.convert_to_matrix(grid, constant.BOARD_SIZE)
                 if main.solve(matrix):
                     count_solved += 1
                 count += 1

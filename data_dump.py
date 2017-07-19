@@ -1,6 +1,7 @@
 """
     Contains the data dump class to dump rush hour steps (matrices) to a file.
 """
+import os
 import helper
 import constant
 import numpy as np
@@ -34,8 +35,8 @@ class DataDump:
                 solver.output = False
                 text = line.split(" ")[0]
                 filename = "lvl" + line.split(" ")[1][-2:] + "." + self.ext
-                grid = solver.create_grid_from_text(text, True)
-                start_matrix = solver.convert_to_matrix(
+                grid = helper.create_grid_from_text(text, True)
+                start_matrix = helper.convert_to_matrix(
                     grid, constant.BOARD_SIZE)
                 steps = line.split(" ")[2]
                 steps = self.convert_steps_to_dicts(steps)
@@ -65,6 +66,8 @@ class DataDump:
                     matrices_all, "Positive", self.labels[1])
                 self.print_debug_output(
                     matrices_all, "Neutral", self.labels[2])
+                if not os.path.exists(self.folder):
+                    os.makedirs(self.folder)
                 file_c = open(self.folder + "\\" + filename, 'w')
                 try:
                     for matrix_obj in matrices_all:
