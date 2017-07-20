@@ -1,22 +1,25 @@
 """
     Contains static helper functions
 """
-import constant
 import numpy
-from vehicle_detector import VehicleDetector2, VehicleDetector3
-from vehicle import Vehicle
+import rushhour.constant
+from rushhour.vehicle_detector import VehicleDetector2, VehicleDetector3
+from rushhour.vehicle import Vehicle
+
 
 def check_boundaries(number):
     """ Checks if number falls within 0 and default(constant.BOARD_SIZE)"""
-    if number < constant.BOARD_SIZE and number >= 0:
+    if number < rushhour.constant.BOARD_SIZE and number >= 0:
         return True
     return False
+
 
 def generate_hash(matrix):
     """
         Generate hash based on 2d array contents
     """
     return hash(matrix.tostring())
+
 
 def is_win_position(vehicle):
     """
@@ -26,6 +29,7 @@ def is_win_position(vehicle):
         return True
     return False
 
+
 def convert_to_matrix(grid, size):
     """
         Convert text string to numerical matrix
@@ -33,51 +37,69 @@ def convert_to_matrix(grid, size):
     matrix = numpy.zeros(shape=(size, size))
     for position in grid:
         matrix[position['y'], position['x']] = position['char']
-    if constant.DEBUG == 1:
+    if rushhour.constant.DEBUG == 1:
+        # TODO replace with logger
         print(matrix)
     return matrix
 
-def check_valid_lane(matrix, y, x, offset_ver, offset_hor):
+
+def check_valid_lane(matrix, y_pos, x_pos, count_empty, move_dir):
     """
         Boundary check and if spot is empty
     """
-    y_pos = y + offset_ver
-    x_pos = x + offset_hor
+    y_pos = y_pos + move_dir['offset_ver'] * count_empty
+    x_pos = x_pos + move_dir['offset_hor'] * count_empty
     return check_boundaries(y_pos) and \
         check_boundaries(x_pos) and \
         matrix[y_pos, x_pos] == 0
 
-def check_valid_move(matrix, vehicle, index, offset, offset_hor):
+
+def check_valid_move(matrix, vehicle, move_dir):
     """
         Check if move falls within boundaries and if spot is empty
     """
-    y_pos = vehicle.position[index]['y'] + offset
-    x_pos = vehicle.position[index]['x'] + offset_hor
+    # print(move_dir)
+    y_pos = vehicle.position[move_dir['index']]['y'] + move_dir['offset_ver']
+    x_pos = vehicle.position[move_dir['index']]['x'] + move_dir['offset_hor']
     return check_boundaries(y_pos) and \
         check_boundaries(x_pos) and \
         matrix[y_pos][x_pos] == 0
 
     # look at object boundaries/size
+
+
 def test_neighbour_empty(matrix, vehicle, direction):
     """
         Look if next position relative to vehicle size is empty spot
     """
-    if direction == constant.LEFT:
-        return check_valid_move(matrix, vehicle, 0, 0, -1)
-    elif direction == constant.RIGHT:
-        if vehicle.size == 2:
-            return check_valid_move(matrix, vehicle, 1, 0, 1)
-        else:
-            return check_valid_move(matrix, vehicle, 2, 0, 1)
-    elif direction == constant.UP:
-        return check_valid_move(matrix, vehicle, 0, -1, 0)
-    elif direction == constant.DOWN:
-        if vehicle.size == 2:
-            return check_valid_move(matrix, vehicle, 1, 1, 0)
-        else:
-            return check_valid_move(matrix, vehicle, 2, 1, 0)
+    move_dir = get_move_dir(vehicle, direction)
+    return check_valid_move(matrix, vehicle, move_dir)
 
-    return False
+
+def get_move_dir(vehicle, direction):
+    """
+        Determine the correct index and offset for use in movement and test_empty functions.
+    """
+    move_dir = {'index': 0, 'offset_ver': 0, 'offset_hor': 0}
+    if direction == rushhour.constant.LEFT:
+        move_dir['offset_hor'] = -1
+    elif direction == rushhour.constant.RIGHT:
+        move_dir['offset_hor'] = 1
+        if vehicle.size == 2:
+            move_dir['index'] = 1
+        else:
+            move_dir['index'] = 2
+    elif direction == rushhour.constant.UP:
+        move_dir['offset_ver'] = -1
+    elif direction == rushhour.constant.DOWN:
+        move_dir['offset_ver'] = 1
+        if vehicle.size == 2:
+            move_dir['index'] = 1
+        else:
+            move_dir['index'] = 2
+
+    return move_dir
+
 
 def count_empty_spots_in_dir(matrix, vehicle, direction):
     """
@@ -86,39 +108,16 @@ def count_empty_spots_in_dir(matrix, vehicle, direction):
         Thus deriving the empty spots in a given direction.
     """
     count_empty = 1  # in order for multiplier to work
-    x_pos = vehicle.position[0]['x']
-    y_pos = vehicle.position[0]['y']
-    if direction == constant.LEFT:
-        offset_hor = -1
-        offset_ver = 0
-    elif direction == constant.RIGHT:
-        if vehicle.size == 2:
-            x_pos = vehicle.position[1]['x']
-            y_pos = vehicle.position[1]['y']
-        else:
-            x_pos = vehicle.position[2]['x']
-            y_pos = vehicle.position[2]['y']
-        offset_hor = 1
-        offset_ver = 0
-    elif direction == constant.UP:
-        offset_hor = 0
-        offset_ver = -1
-    elif direction == constant.DOWN:
-        if vehicle.size == 2:
-            x_pos = vehicle.position[1]['x']
-            y_pos = vehicle.position[1]['y']
-        else:
-            x_pos = vehicle.position[2]['x']
-            y_pos = vehicle.position[2]['y']
-        offset_hor = 0
-        offset_ver = 1
+    move_dir = get_move_dir(vehicle, direction)
+    x_pos = vehicle.position[move_dir['index']]['x']
+    y_pos = vehicle.position[move_dir['index']]['y']
 
-    while check_valid_lane(matrix, y_pos, x_pos, offset_ver * count_empty, offset_hor * count_empty):
+    while check_valid_lane(matrix, y_pos, x_pos, count_empty, move_dir):
         count_empty += 1
     if count_empty == 1:
         return 0
-    else:
-        return count_empty - 1
+    return count_empty - 1
+
 
 def try_to_find_vehicle(matrix, y_pos, x_pos):
     """
@@ -139,7 +138,8 @@ def try_to_find_vehicle_c(matrix, step):
     """
     for y_pos, row in enumerate(matrix):
         for x_pos, column in enumerate(row):
-            if step['direction'] == constant.LEFT or step['direction'] == constant.RIGHT:
+            dirc = step['direction']
+            if dirc == rushhour.constant.LEFT or dirc == rushhour.constant.RIGHT:
                 vehicle = find_vehicle_bounds(
                     matrix, y_pos, x_pos, 'hor')
             else:
@@ -149,6 +149,7 @@ def try_to_find_vehicle_c(matrix, step):
             if vehicle and vehicle.char == step['char']:
                 return vehicle
     return None
+
 
 def find_vehicle_bounds(matrix, y_pos, x_pos, mode):
     """
@@ -169,6 +170,7 @@ def find_vehicle_bounds(matrix, y_pos, x_pos, mode):
             return size_2
     return None
 
+
 def create_grid_from_text(text, file=False):
     """
         Convert textual representation to numerical representation
@@ -186,11 +188,12 @@ def create_grid_from_text(text, file=False):
         countx = 0
         for position in row:
             indexes.append(
-                {'char': constant.LABEL[position], 'y': county, 'x': countx})
+                {'char': rushhour.constant.LABEL[position], 'y': county, 'x': countx})
             countx += 1
         county += 1
 
-    if constant.DEBUG == 1:
+    if rushhour.constant.DEBUG == 1:
+        # TODO replace with logger
         print(len(indexes))
 
     return indexes

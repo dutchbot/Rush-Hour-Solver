@@ -1,7 +1,7 @@
 """
     Contains the Vehicle class for usage in solver.
 """
-import constant
+from rushhour import constant
 
 class Vehicle:
     """

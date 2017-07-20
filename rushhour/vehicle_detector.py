@@ -2,7 +2,7 @@
     Contains vehicle detection classes.
 """
 
-import helper
+from rushhour import helper
 
 class VehicleDetector:
     """

@@ -3,9 +3,13 @@
 """
 
 import unittest
-from main import Solver
-import constant
-import helper
+import sys
+import os
+sys.path.insert(0, os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..')))
+from rushhour import constant
+from rushhour import helper
+from rushhour.solver import solver_bfs
 
 
 class TestLevels(unittest.TestCase):
@@ -23,7 +27,7 @@ class TestLevels(unittest.TestCase):
 
         try:
             for line in file_name.readlines():
-                main = Solver()
+                main = solver_bfs.SolverBfs()
                 main.output = False
                 text = line.split(" ")[0]
                 grid = helper.create_grid_from_text(text, True)
@@ -36,7 +40,3 @@ class TestLevels(unittest.TestCase):
         finally:
             file_name.close()
         self.assertEqual(count, count_solved)
-
-
-if __name__ == '__main__':
-    unittest.main()

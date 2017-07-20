@@ -3,11 +3,11 @@
     In a bruteforce manner, BFS approach.
 """
 import copy
-import helper
-import constant
+from rushhour import helper
+from rushhour import constant
 
 
-class Solver:
+class SolverBfs:
     """
         Contains the neccesary (helper) functions to solve the rush hour game. (hardcoded to 6x6)
         In a bruteforce manner, BFS approach.
@@ -46,7 +46,7 @@ class Solver:
         while self.queue:
             current = self.queue.pop()  # take a new matrix from the queue
             if red != None and helper.is_win_position(red) and not solved:
-                print("Found solution in " + str(count) + " steps!")
+                print("Found solution in " + str(count) + " states!")
                 print(current)
                 solved = True
                 break
