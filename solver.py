@@ -77,45 +77,48 @@ class Solver:
             else:  # fixing the difference between digital and board
                 step = steps.pop()
                 if red is None:  # dirty
-                    red = helper.try_to_find_vehicle_c(current, step)
+                    red = helper.find_vehicle_axis(current, step)
                 if red.position[1]['x'] < 5:
                     step['steps'] = 5 - red.position[1]['x']
                 red = self.do_step(current, step)
             count += 1
         return self.list_matrices_full
 
-    def do_step(self, matrix, step):
+    def do_step(self, board, step):
         """
             do a pre determined step
         """
         red = None
-        vehicle = helper.try_to_find_vehicle_c(matrix, step)
+        vehicle = helper.find_vehicle_axis(board, step)
         test = {constant.UP: 'y', constant.DOWN: 'y',
                 constant.LEFT: 'x', constant.RIGHT: 'x'}
-        new_matrix = copy.copy(
-            matrix)  # copy in order to generate correct hash
+        # copy in order to generate correct hash
+        next_board = copy.copy(board) 
         if vehicle:
             dir_key = step['direction']
             stepsize = step['steps']
             if dir_key == constant.LEFT or dir_key == constant.UP:
                 stepsize = -stepsize
-            self.slider(matrix, vehicle, dir_key, test[dir_key], stepsize)
-            self.update_matrix(matrix, vehicle)
-            self.propose(matrix, new_matrix)
+            self.slider(board, vehicle, dir_key, test[dir_key], stepsize)
+            self.update_matrix(board, vehicle)
+            self.propose(board, next_board)
         if vehicle and vehicle.is_red_car():
             red = vehicle
         return red
 
-    def explore(self, matrix):
+    def explore(self, board):
         """
-            Scan the entire matrix per point for vehicles,
+            Scan the entire board per point for vehicles,
             making sure that each vehicle is moved only once per exploration.
+
+            should we not find the vehicles initially and iterate over the vehicles and find empty spots.
+            instead of iterating through all the points and finding vehicles and empty spots.
         """
         red = None
         vehicles = []
-        for y_pos, row in enumerate(matrix):
+        for y_pos, row in enumerate(board):
             for x_pos, column in enumerate(row):
-                vehicle = helper.try_to_find_vehicle(matrix, y_pos, x_pos)
+                vehicle = helper.find_vehicle_on_board_position(board, y_pos, x_pos)
                 duplicate = False
                 for comp_vehicle in vehicles:
                     if vehicle is None:
@@ -129,17 +132,17 @@ class Solver:
                 if vehicle.is_red_car():
                     red = vehicle
                 count_left = {constant.LEFT: helper.count_empty_spots_in_dir(
-                    matrix, vehicle, constant.LEFT)}
+                    board, vehicle, constant.LEFT)}
                 count_right = {constant.RIGHT: helper.count_empty_spots_in_dir(
-                    matrix, vehicle, constant.RIGHT)}
+                    board, vehicle, constant.RIGHT)}
                 count_up = {constant.UP: helper.count_empty_spots_in_dir(
-                    matrix, vehicle, constant.UP)}
+                    board, vehicle, constant.UP)}
                 count_down = {constant.DOWN: helper.count_empty_spots_in_dir(
-                    matrix, vehicle, constant.DOWN)}
-                self.slide(matrix, vehicle, count_left)
-                self.slide(matrix, vehicle, count_right)
-                self.slide(matrix, vehicle, count_up)
-                self.slide(matrix, vehicle, count_down)
+                    board, vehicle, constant.DOWN)}
+                self.slide(board, vehicle, count_left)
+                self.slide(board, vehicle, count_right)
+                self.slide(board, vehicle, count_up)
+                self.slide(board, vehicle, count_down)
         return red
 
     def slide(self, matrix, vehicle, direction):
@@ -194,7 +197,7 @@ class Solver:
         if allowed:
             self.total_steps += 1
             if self.output:
-                print(str(vehicle.char) + "-" + direction)
+                print(str(vehicle.identifier) + "-" + direction)
             vehicle.new_positions[0][plc] += stepsize
             vehicle.new_positions[1][plc] += stepsize
             if vehicle.size == 3:
@@ -208,11 +211,11 @@ class Solver:
             Update the matrix with new vehicle positions, and update vehicle to the new position
         """
         if vehicle.new_positions:
-            for count, data in enumerate(vehicle.position):
-                matrix[vehicle.position[count]['y'],
-                       vehicle.position[count]['x']] = 0
-            for count, data in enumerate(vehicle.new_positions):
-                matrix[vehicle.new_positions[count]['y'],
-                       vehicle.new_positions[count]['x']] = vehicle.char
+            for block, _ in enumerate(vehicle.position):
+                matrix[vehicle.position[block]['y'],
+                       vehicle.position[block]['x']] = 0
+            for block, _ in enumerate(vehicle.new_positions):
+                matrix[vehicle.new_positions[block]['y'],
+                       vehicle.new_positions[block]['x']] = vehicle.identifier
 
             vehicle.update_current_position()

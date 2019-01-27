@@ -15,6 +15,7 @@ def main(text="....AA\n..BBCC\nrr..EF\nGGHHEF\n...IEF\n...IJJ"):
     grid = helper.create_grid_from_text(text)
     matrix = helper.convert_to_matrix(grid, constant.BOARD_SIZE)
     solver.solve(matrix)
+    input("Press Enter to continue...")
 
 def dump_data():
     """

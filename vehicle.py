@@ -8,7 +8,7 @@ class Vehicle:
         Used for movement, holding positions, checking bounds
     """
     size = -1
-    char = -1
+    identifier = -1
     move_dir = ""
     move_count = 0
     mode = constant.MOVEMENT_DIRECTIONS[0]
@@ -28,7 +28,7 @@ class Vehicle:
         """
             Used for determining winning vehicle.
         """
-        return self.char == 18
+        return self.identifier == 18
 
     def init_new_pos(self):
         """
@@ -43,11 +43,11 @@ class Vehicle:
                                   {'x': self.position[2]['x'], 'y': self.position[2]['y']}]
 
     def __str__(self):
-        return str(self.char)
+        return str(self.identifier)
 
     # used for checking if in an explore state vehicle was already found
     def __eq__(self, other):
-        return other is not None and self.char == other.char
+        return other is not None and self.identifier == other.identifier
 
     def __repr__(self):
         return str(self)

@@ -120,7 +120,7 @@ def count_empty_spots_in_dir(matrix, vehicle, direction):
     else:
         return count_empty - 1
 
-def try_to_find_vehicle(matrix, y_pos, x_pos):
+def find_vehicle_on_board_position(matrix, y_pos, x_pos):
     """
         Find vehicles either horizontal or vertical, both is not possible at the same position.
     """
@@ -132,21 +132,23 @@ def try_to_find_vehicle(matrix, y_pos, x_pos):
         if hor_vehicle:
             return hor_vehicle
 
+def determine_axis_by_direction(direction):
+    if direction == constant.LEFT or direction == constant.RIGHT:
+        return constant.MOVEMENT_DIRECTIONS[0]
+    else:
+        return constant.MOVEMENT_DIRECTIONS[1]
 
-def try_to_find_vehicle_c(matrix, step):
+def find_vehicle_axis(matrix, step):
     """
         Find vehicles either horizontal or vertical, both is not possible at the same position.
+
+        This function will probably become obsolete when we move on the grid by vehicle only (OOP)
     """
     for y_pos, row in enumerate(matrix):
         for x_pos, column in enumerate(row):
-            if step['direction'] == constant.LEFT or step['direction'] == constant.RIGHT:
-                vehicle = find_vehicle_bounds(
-                    matrix, y_pos, x_pos, 'hor')
-            else:
-                vehicle = find_vehicle_bounds(
-                    matrix, y_pos, x_pos, 'ver')
-
-            if vehicle and vehicle.char == step['char']:
+            axis = determine_axis_by_direction(step['direction'])
+            vehicle = find_vehicle_bounds(matrix, y_pos, x_pos, axis)
+            if vehicle and vehicle.identifier == step['char']:
                 return vehicle
     return None
 
@@ -155,16 +157,16 @@ def find_vehicle_bounds(matrix, y_pos, x_pos, mode):
         Detect the start and end point of vehicles depending on size,
         we can either have a size of 2 or 3 at a given spot not both.
     """
-    current = matrix[y_pos, x_pos]
+    vehicle_identifier = matrix[y_pos, x_pos]
     vehicle = Vehicle()
-    vehicle.char = current
-    if current != 0:
+    vehicle.identifier = vehicle_identifier
+    if vehicle_identifier != 0:
         size_3 = VehicleDetector3().find_vehicle(
-            matrix, y_pos, x_pos, mode, vehicle, current)
+            matrix, y_pos, x_pos, mode, vehicle, vehicle_identifier)
         if size_3:
             return size_3
         size_2 = VehicleDetector2().find_vehicle(
-            matrix, y_pos, x_pos, mode, vehicle, current)
+            matrix, y_pos, x_pos, mode, vehicle, vehicle_identifier)
         if size_2:
             return size_2
     return None
