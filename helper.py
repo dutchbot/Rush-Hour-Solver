@@ -58,7 +58,7 @@ def check_valid_move(matrix, vehicle, index, offset, offset_hor):
         matrix[y_pos][x_pos] == 0
 
     # look at object boundaries/size
-def test_neighbour_empty(matrix, vehicle, direction):
+def is_board_position_empty_in_direction(matrix, vehicle, direction):
     """
         Look if next position relative to vehicle size is empty spot
     """
@@ -88,28 +88,21 @@ def count_empty_spots_in_dir(matrix, vehicle, direction):
     count_empty = 1  # in order for multiplier to work
     x_pos = vehicle.position[0]['x']
     y_pos = vehicle.position[0]['y']
+    indexed_size = vehicle.size - 1
     if direction == constant.LEFT:
         offset_hor = -1
         offset_ver = 0
     elif direction == constant.RIGHT:
-        if vehicle.size == 2:
-            x_pos = vehicle.position[1]['x']
-            y_pos = vehicle.position[1]['y']
-        else:
-            x_pos = vehicle.position[2]['x']
-            y_pos = vehicle.position[2]['y']
+        x_pos = vehicle.position[indexed_size]['x']
+        y_pos = vehicle.position[indexed_size]['y']
         offset_hor = 1
         offset_ver = 0
     elif direction == constant.UP:
         offset_hor = 0
         offset_ver = -1
     elif direction == constant.DOWN:
-        if vehicle.size == 2:
-            x_pos = vehicle.position[1]['x']
-            y_pos = vehicle.position[1]['y']
-        else:
-            x_pos = vehicle.position[2]['x']
-            y_pos = vehicle.position[2]['y']
+        x_pos = vehicle.position[indexed_size]['x']
+        y_pos = vehicle.position[indexed_size]['y']
         offset_hor = 0
         offset_ver = 1
 

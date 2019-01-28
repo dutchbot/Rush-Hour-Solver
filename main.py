@@ -3,7 +3,8 @@
 """
 import constant
 import helper
-from solver import Solver
+#from solver import Solver
+from solver_2 import Solver2
 from data_dump import DataDump
 
 def main(text="....AA\n..BBCC\nrr..EF\nGGHHEF\n...IEF\n...IJJ"):
@@ -11,7 +12,7 @@ def main(text="....AA\n..BBCC\nrr..EF\nGGHHEF\n...IEF\n...IJJ"):
         Runs the standard provided level
     """
     print(text)
-    solver = Solver()
+    solver = Solver2()
     grid = helper.create_grid_from_text(text)
     matrix = helper.convert_to_matrix(grid, constant.BOARD_SIZE)
     solver.solve(matrix)

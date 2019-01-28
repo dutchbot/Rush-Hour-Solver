@@ -191,7 +191,7 @@ class Solver:
             allowed = False
 
         # check allowed or we are already out of bounds
-        if allowed and not helper.test_neighbour_empty(matrix, vehicle, direction):
+        if allowed and not helper.is_board_position_empty_in_direction(matrix, vehicle, direction):
             allowed = False
 
         if allowed:
