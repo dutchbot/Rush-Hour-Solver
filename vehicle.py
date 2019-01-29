@@ -2,6 +2,7 @@
     Contains the Vehicle class for usage in solver.
 """
 import constant
+import helper
 
 class Vehicle:
     """
@@ -10,18 +11,17 @@ class Vehicle:
     size = -1
     identifier = -1
     has_moved = False
-    move_dir = ""
-    move_count = 0
     mode = constant.MOVEMENT_DIRECTIONS[0]
     position = []  # depending on size 2 or 3 by 2 matrix
 
     def drive(self, axis, stepsize):
+        current_hash =  helper.generate_hash(str(self.position))
         self.position[0][axis] += stepsize
         self.position[1][axis] += stepsize
         if self.size == 3:
             self.position[2][axis] += stepsize
-        self.move_count += 1
-        if(stepsize != 0):
+        after_hash = helper.generate_hash(str(self.position))
+        if(current_hash != after_hash):
             self.has_moved = True
 
     def reset_has_moved(self):

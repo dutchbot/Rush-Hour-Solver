@@ -12,11 +12,11 @@ def check_boundaries(number):
         return True
     return False
 
-def generate_hash(matrix):
+def generate_hash(value):
     """
-        Generate hash based on 2d array contents
+        Generate hash based on string
     """
-    return hash(matrix.tostring())
+    return hash(value)
 
 def is_win_position(vehicle):
     """
