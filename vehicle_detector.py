@@ -1,5 +1,7 @@
 """
     Contains vehicle detection classes.
+
+    This is not generic enough.
 """
 
 import helper
@@ -14,9 +16,27 @@ class VehicleDetector:
         """
         pass
 
+class VehicleDetectorMatrix():
+    """
+        logic: Given the mode of search e.g horizontal or vertical. Find consecutive vehicle identifiers. if we have 2 or more consecutive identifiers, we have found a vehicle in that alignment.
+        The current code is wasteful of resources and not efficient because it finds vehicles multiple times, because we evaluate every position.
+
+        We should only move vehicles, and then update the matrix with all the vehicle movements. 
+        how to efficiently determine if a step is valid?, we only care if the spot is empty.
+
+
+
+    """
+
 class VehicleDetector2(VehicleDetector):
     """
         Detects vehicles of size 2
+
+        logic: Given the mode of search e.g horizontal or vertical. Find consecutive vehicle identifiers.
+        The current code is wasteful of resources and not efficient because it finds vehicles multiple times, because we evaluate every position.
+
+        We should only move vehicles, and then update the matrix with all the vehicle movements. 
+        how to efficiently determine if a step is valid?, we only care if the spot is empty.
     """
     def find_vehicle(self, matrix, y_pos, x_pos, mode, vehicle, current):
         """

@@ -45,7 +45,7 @@ class DataDump:
                 matrices_positive = solver.solve_steps(start_matrix, steps)
                 solver = Solver()
                 solver.output = False
-                matrices_neutral = solver.solve(start_matrix)
+                matrices_neutral = solver.solve_bfs(start_matrix)
                 id_c = 2
                 hashes = []
                 for mneu in matrices_neutral:
