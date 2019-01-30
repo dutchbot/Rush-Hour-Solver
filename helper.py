@@ -3,6 +3,7 @@
 """
 import constant
 import numpy
+import copy
 from vehicle_detector import VehicleDetector2, VehicleDetector3
 from vehicle import Vehicle
 
@@ -112,6 +113,31 @@ def count_empty_spots_in_dir(matrix, vehicle, direction):
         return 0
     else:
         return count_empty - 1
+
+def traverse_optimal_moves(predecessors, end_board):
+    board_hash = predecessors[generate_hash(end_board.tostring())]
+    count = 0
+    while board_hash != None:
+        count += 1
+        #print(self.list_visited_boards[board_hash])
+        board_hash = predecessors[board_hash]
+    print("Graph consisted of " + str(count) + " steps!")
+
+
+def propose(predecessors, list_visited_boards,current_board, prev_board, working_set):
+    """ 
+        Add new hashed matrix to predeccesor dictionary if not exists,
+        and add to queue or stack for next exploration.
+    """
+    if not generate_hash(current_board.tostring()) in predecessors:
+        if prev_board is not None:
+            prev_board = generate_hash(prev_board.tostring())
+        predecessors[generate_hash(current_board.tostring())] = prev_board
+        # need to copy it because python references by default.
+        list_visited_boards[generate_hash(current_board.tostring())] = copy.deepcopy(current_board)
+        working_set.append(copy.deepcopy(current_board))
+        return True
+    return False
 
 def find_vehicle_on_board_position(matrix, y_pos, x_pos):
     """
