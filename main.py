@@ -11,11 +11,13 @@ def main(text="....AA\n..BBCC\nrr..EF\nGGHHEF\n...IEF\n...IJJ"):
     """
         Runs the standard provided level
     """
+    text = "AAOBCC\n..OB..\nrrO...\nDEEFFP\nD..K.P\nHH.K.P"
     print(text)
     solver_dfs = dfs.SolverDfs()
     solver_bfs = bfs.SolverBfs()
-    grid = helper.create_grid_from_text(text)
+    grid = helper.create_matrix_from_text(text)
     matrix = helper.convert_to_matrix(grid, constant.BOARD_SIZE)
+    print(matrix)
     print("Running depth-first search..")
     solver_dfs.solve(matrix)
     print("Running breadth-first search..")

@@ -35,7 +35,7 @@ class DataDump:
                 solver.output = False
                 text = line.split(" ")[0]
                 filename = "lvl" + line.split(" ")[1][-2:] + "." + self.ext
-                grid = helper.create_grid_from_text(text, True)
+                grid = helper.create_matrix_from_text(text, True)
                 start_matrix = helper.convert_to_matrix(
                     grid, constant.BOARD_SIZE)
                 steps = line.split(" ")[2]
