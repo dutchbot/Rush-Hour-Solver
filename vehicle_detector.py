@@ -4,7 +4,7 @@
     This is not generic enough.
 """
 
-import helper
+import game_helper
 
 class VehicleDetector:
     """
@@ -17,9 +17,9 @@ class VehicleDetector:
         pos = []
         max_size = 3
         for offset in range(0, max_size):
-            if mode == 'hor' and helper.check_boundaries(x_pos + offset) and matrix[y_pos, x_pos + offset] == current:
+            if mode == 'hor' and game_helper.check_boundaries(x_pos + offset) and matrix[y_pos, x_pos + offset] == current:
                 pos.append({'x': x_pos + offset, 'y': y_pos}) 
-            elif mode == 'ver' and helper.check_boundaries(y_pos + offset) and matrix[y_pos + offset, x_pos] == current:
+            elif mode == 'ver' and game_helper.check_boundaries(y_pos + offset) and matrix[y_pos + offset, x_pos] == current:
                 pos.append({'x': x_pos, 'y': y_pos + offset})
 
         if pos.__len__() == 2 or pos.__len__() == 3:

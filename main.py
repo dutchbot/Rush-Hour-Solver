@@ -4,16 +4,18 @@
 import constant
 import helper
 #from solver import Solver
-#from data_dump import DataDump
+import rush_hour
+from data_dump import DataDump
 import bfs, dfs
 
 def main(text="....AA\n..BBCC\nrr..EF\nGGHHEF\n...IEF\n...IJJ"):
     """
         Runs the standard provided level
     """
-    text = "AAOBCC\n..OB..\nrrO...\nDEEFFP\nD..K.P\nHH.K.P"
+    #text = "AAOBCC\n..OB..\nrrO...\nDEEFFP\nD..K.P\nHH.K.P"
     print(text)
-    solver_dfs = dfs.SolverDfs()
+    game = rush_hour.RushHour()
+    solver_dfs = dfs.SolverDfs(game)
     solver_bfs = bfs.SolverBfs()
     grid = helper.create_matrix_from_text(text)
     matrix = helper.convert_to_matrix(grid, constant.BOARD_SIZE)
@@ -28,9 +30,9 @@ def dump_data():
     """
         Dumps the matrices to ./data folder
     """
-    # local_data_dump = DataDump()
-    # local_data_dump.dump_data_to_file()
+    local_data_dump = DataDump()
+    local_data_dump.dump_data_to_file()
 
 if __name__ == "__main__":
-    main()
-    #dump_data() FIXME
+    # main()
+    dump_data()

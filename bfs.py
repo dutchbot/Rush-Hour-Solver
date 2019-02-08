@@ -15,7 +15,8 @@ class SolverBfs:
 
     def solve(self, board):
         self.propose_easy(board, None)
-        playgame = rush_hour.RushHour(self.propose_easy)
+        playgame = rush_hour.RushHour()
+        playgame.propose_easy = self.propose_easy
         while self.queue:
             unseen_board = self.queue.popleft()
             if playgame.play(unseen_board):

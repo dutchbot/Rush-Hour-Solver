@@ -1,5 +1,6 @@
 import copy
 import helper
+import game_helper
 import constant
 from timeit import default_timer as timer
 from vehicle_detector import VehicleDetector
@@ -8,19 +9,18 @@ from vehicle import Vehicle
 
 class RushHour():
 
-    def __init__(self, propose_easy):
+    def __init__(self):
         self.solved = False
         self.explored_boards = 0
         self.start_time = timer()
         self.end_time = None
-        # type vehicle
+        # goal typeof vehicle
         self.goal = None
         self.total_steps = 0
-        self.propose_easy = propose_easy
+        self.propose_easy = lambda *args, **kwargs: None
 
     def play(self, unseen_board):
         # we have to renew the list of vehicles for each board, or we can never solve the board
-        # the bread first search only works if we can explore different starting boards, derived from previous boards.
         vehicles = self.detect_vehicles(unseen_board)
         if self.goal != None and self.is_win_position(self.goal) and not self.solved:
             self.end_time = timer()
@@ -29,7 +29,7 @@ class RushHour():
             print("algo time:" + str(self.end_time - self.start_time))
             self.solved = True
             return True
-        # for each state return the red vehicle
+        # for each state return the red vehicle so we can evaluate the win condition
         self.goal = self.explore(vehicles, unseen_board)
         self.explored_boards += 1
         return False
@@ -253,48 +253,12 @@ class RushHour():
             Find vehicles either horizontal or vertical, both is not possible at the same position.
         """
         if matrix[y_pos, x_pos] != 0:
-            hor_vehicle = self.find_vehicle_bounds(matrix, y_pos, x_pos, 'hor')
-            ver_vehicle = self.find_vehicle_bounds(matrix, y_pos, x_pos, 'ver')
+            hor_vehicle = game_helper.find_vehicle_bounds(matrix, y_pos, x_pos, 'hor')
+            ver_vehicle = game_helper.find_vehicle_bounds(matrix, y_pos, x_pos, 'ver')
             if ver_vehicle:
                 return ver_vehicle
             if hor_vehicle:
                 return hor_vehicle
-
-    def determine_axis_by_direction(self, direction):
-        if direction == constant.LEFT or direction == constant.RIGHT:
-            return constant.MOVEMENT_DIRECTIONS[0]
-        else:
-            return constant.MOVEMENT_DIRECTIONS[1]
-
-    def find_vehicle_axis(self, matrix, step):
-        """
-            Find vehicles either horizontal or vertical, both is not possible at the same position.
-
-            This function will probably become obsolete when we move on the grid by vehicle only (OOP)
-        """
-        for y_pos, row in enumerate(matrix):
-            for x_pos, column in enumerate(row):
-                axis = self.determine_axis_by_direction(step['direction'])
-                vehicle = self.find_vehicle_bounds(matrix, y_pos, x_pos, axis)
-                if vehicle and vehicle.identifier == step['char']:
-                    return vehicle
-        return None
-
-    def find_vehicle_bounds(self, matrix, y_pos, x_pos, mode):
-        """
-            Detect the start and end point of vehicles depending on size,
-            we can either have a size of 2 or 3 at a given spot not both.
-            on the y,x position currently selected if char > 0 try to find a vehicle of maximum size 3
-        """
-        vehicle_identifier = matrix[y_pos, x_pos]
-        vehicle = Vehicle()
-        vehicle.identifier = vehicle_identifier
-        if vehicle_identifier != 0:
-            size_2 = VehicleDetector().find_vehicle(
-                matrix, y_pos, x_pos, mode, vehicle, vehicle_identifier)
-            if size_2:
-                return size_2
-        return None
 
     def check_boundaries(self, number):
         """ Checks if number falls within 0 and default(constant.BOARD_SIZE)"""

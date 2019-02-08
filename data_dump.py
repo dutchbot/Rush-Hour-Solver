@@ -5,9 +5,9 @@ import os
 import helper
 import constant
 import numpy as np
-from solver import Solver
-
-
+from rush_hour import RushHour
+from dfs import SolverDfs as Solver
+from rush_hour_step_executor import RushHourStepExecutor
 
 class DataDump:
     """
@@ -31,7 +31,7 @@ class DataDump:
         file = open('levels.txt', 'r')
         try:
             for line in file.readlines():
-                solver = Solver()
+                solver = Solver(RushHourStepExecutor())
                 solver.output = False
                 text = line.split(" ")[0]
                 filename = "lvl" + line.split(" ")[1][-2:] + "." + self.ext
@@ -43,9 +43,9 @@ class DataDump:
                 matrices_all = []
                 matrices_all.append({"id": 1, "neu": start_matrix})
                 matrices_positive = solver.solve_steps(start_matrix, steps)
-                solver = Solver()
+                solver = Solver(RushHour())
                 solver.output = False
-                matrices_neutral = solver.solve_bfs(start_matrix)
+                matrices_neutral = solver.solve(start_matrix)
                 id_c = 2
                 hashes = []
                 for mneu in matrices_neutral:
