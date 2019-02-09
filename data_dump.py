@@ -48,16 +48,17 @@ class DataDump:
                 matrices_neutral = solver.solve(start_matrix)
                 id_c = 2
                 hashes = []
-                for mneu in matrices_neutral:
-                    if not helper.generate_hash(mneu) in hashes:
-                        hashes.append(helper.generate_hash(mneu))
+                for neutral in matrices_neutral:
+                    hashed_matrix = helper.generate_hash(str(neutral))
+                    if not hashed_matrix in hashes:
+                        hashes.append(hashed_matrix)
                         matched = False
                         for mpos in matrices_positive:
-                            if np.array_equal(mneu, mpos):
+                            if np.array_equal(neutral, mpos):
                                 matched = True
-                                matrices_all.append({"id": id_c, "pos": mneu})
+                                matrices_all.append({"id": id_c, "pos": neutral})
                         if not matched:
-                            matrices_all.append({"id": id_c, "neg": mneu})
+                            matrices_all.append({"id": id_c, "neg": neutral})
                         id_c += 1
                 print(len(hashes))
                 self.print_debug_output(
@@ -92,6 +93,8 @@ class DataDump:
         line = ""
         label = list(matrix_obj.keys())[1]
         matrix = matrix_obj[label]
+        if not isinstance(matrix, np.ndarray):
+            raise Exception("not a matrix")
         line += label + ":"
         for y_pos, row in enumerate(matrix):
             for x_pos, column in enumerate(row):

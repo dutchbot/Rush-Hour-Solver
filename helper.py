@@ -31,7 +31,7 @@ def traverse_optimal_moves(predecessors, end_board):
         board_hash = predecessors[board_hash]
     print("Graph consisted of " + str(count) + " steps!")
 
-def propose(predecessors, list_visited_boards,current_board, prev_board, working_set):
+def propose(predecessors, list_visited_boards, current_board, prev_board, working_set):
     """ 
         Add new hashed matrix to predeccesor dictionary if not exists,
         and add to queue or stack for next exploration.
@@ -43,8 +43,8 @@ def propose(predecessors, list_visited_boards,current_board, prev_board, working
         # need to copy it because python references by default.
         list_visited_boards[generate_hash(current_board.tostring())] = copy.deepcopy(current_board)
         working_set.append(copy.deepcopy(current_board))
-        return True
-    return False
+        return current_board
+    return current_board
 
 def create_matrix_from_text(text, file=False):
     """

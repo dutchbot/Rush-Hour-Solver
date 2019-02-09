@@ -1,18 +1,22 @@
 import copy
 import helper
 import rush_hour
+import numpy as np
 
 class SolverDfs:
 
     def __init__(self, playgame):
         self.visited_boards = {}
+        self.visited_boards_matrix = []
         self.stack = []
         self.predecessor = {}
         self.solved = False
         self.playgame = playgame
 
     def propose_easy(self, next_matrix, prev_matrix):
-        return helper.propose(self.predecessor, self.visited_boards, next_matrix, prev_matrix, self.stack)
+        result = helper.propose(self.predecessor, self.visited_boards, next_matrix, prev_matrix, self.stack)
+        if isinstance(result, np.ndarray):
+            self.visited_boards_matrix.append(result)
 
     def solve(self, board):
         self.propose_easy(board, None)
@@ -25,7 +29,7 @@ class SolverDfs:
                 break
         if not self.solved:
             print("Did not find solution..")
-        return self.visited_boards
+        return self.visited_boards_matrix
 
     def solve_steps(self, board, steps):
         self.propose_easy(board, None)
@@ -38,4 +42,4 @@ class SolverDfs:
                 break
         if not self.solved:
             print("Did not find solution..")
-        return self.visited_boards
+        return self.visited_boards_matrix
