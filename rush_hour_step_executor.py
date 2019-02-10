@@ -18,16 +18,16 @@ class RushHourStepExecutor(rush_hour.RushHour):
         super(RushHourStepExecutor, self).__init__()
         self.steps = []
 
-    def play(self, board, steps):
+    def play(self, board, steps, count_dict):
         """
             Execute the steps given on the starting matrix.
         """
-        count = 0
         step_length = len(steps)
         if self.goal != None and self.is_win_position(self.goal) and not self.solved:
-            print("Found solution in " + str(count) + " steps!")
+            print("Found solution in " + str(count_dict['count']) + " steps!")
             self.solved = True
-        if count != step_length - 1:
+            return self.solved
+        if count_dict['count'] != step_length - 1:
             if(step_length == 0):
                 return
             step = steps.pop()
@@ -40,8 +40,7 @@ class RushHourStepExecutor(rush_hour.RushHour):
             if self.goal.position[1]['x'] < 5:
                 step['steps'] = 5 - self.goal.position[1]['x']
             self.goal = self.do_step(board, step)
-        count += 1
-
+        count_dict['count'] = count_dict['count'] + 1
 
     def do_step(self, board, step):
         """

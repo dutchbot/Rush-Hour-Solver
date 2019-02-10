@@ -32,11 +32,12 @@ class SolverDfs:
         return self.visited_boards_matrix
 
     def solve_steps(self, board, steps):
+        count_dict = {'count' : 0}
         self.propose_easy(board, None)
         self.playgame.propose_easy = self.propose_easy
         while self.stack:
             unseen_board = self.stack.pop()
-            if self.playgame.play(unseen_board, steps):
+            if self.playgame.play(unseen_board, steps, count_dict):
                 helper.traverse_optimal_moves(self.predecessor, unseen_board)
                 self.solved = True
                 break
