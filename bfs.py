@@ -22,7 +22,8 @@ class SolverBfs:
             if playgame.play(unseen_board):
                 helper.traverse_optimal_moves(self.predecessor, unseen_board)
                 self.solved = True
-                break
+                return True
         if not self.solved:
             print("Did not find solution..")
+            return False
         return self.visited_boards

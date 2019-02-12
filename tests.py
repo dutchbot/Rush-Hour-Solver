@@ -27,15 +27,17 @@ class TestLevels(unittest.TestCase):
                 main.output = False
                 text = line.split(" ")[0]
                 grid = helper.create_matrix_from_text(text, True)
-                matrix = helper.convert_to_matrix(grid, constant.BOARD_SIZE)
-                if main.solve(matrix):
+                board = helper.convert_to_matrix(grid, constant.BOARD_SIZE)
+                print(board)
+                if main.solve(board):
                     count_solved += 1
                 count += 1
-                #print(main.total_steps)
-                main.total_steps = 0
+        except Exception as e:
+            print(f"exception was raised: {e.__str__()}")
         finally:
             file_name.close()
-        #self.assertEqual(count, count_solved)
+            self.assertEqual(count, count_solved, msg="Not all levels were solved!")
+            input("Press Enter to continue...")
 
 
 if __name__ == '__main__':
